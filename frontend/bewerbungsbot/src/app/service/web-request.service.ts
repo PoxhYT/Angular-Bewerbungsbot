@@ -16,6 +16,10 @@ export class WebRequestService {
     return this.http.get(`${this.ROOT_URL}${uri}`);
   }
 
+  getApplicationsSent(uri: string) {
+    return this.http.get(`${this.ROOT_URL}${uri}`);
+  }
+
   post(uri: string, data: Object) {
     return this.http.post(`${this.ROOT_URL}${uri}`, data);
   }

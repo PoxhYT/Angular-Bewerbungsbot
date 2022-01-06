@@ -8,7 +8,11 @@ export class TaskService {
 
   constructor(private WebRequestService: WebRequestService) { }
 
-  sendApplication(userName : string, profilePicture: string, documents: Array<Object>) {
-    this.WebRequestService.post("/sendApplication", { userName, profilePicture, documents});
+  sendApplication(userName : string, profilePicture: string, documents: Object) {
+    return this.WebRequestService.post("/sendApplication", { userName, profilePicture, documents});
+  }
+
+  getApplications() {
+    return this.WebRequestService.getApplicationsSent("/applications/Mike");
   }
 }

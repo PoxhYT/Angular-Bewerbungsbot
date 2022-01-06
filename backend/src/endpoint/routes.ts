@@ -10,6 +10,11 @@ router.get("/", async (req, res) => {
     res.json({message: "HELLO"})
 });
 
+router.get("/applications/:userName", async (req, res) => {
+    let user = await User.find({userName: req.params.userName});
+    res.send(user);
+});
+
 router.post('/sendApplication', async (req, res) => {
     const { userName, profilePicture, documents} = req.body;
     const user = new User({
@@ -19,6 +24,7 @@ router.post('/sendApplication', async (req, res) => {
     });
 
     const user_response = await user.save();
+    console.log(user_response);
     res.json(user_response);
 })
 

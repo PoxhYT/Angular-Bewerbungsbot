@@ -17,7 +17,13 @@ async function main() {
 
   app.use(helmet());
   app.use(express.json());
-  app.use(cors());
+  const corsOptions ={
+    origin:'*', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200,
+ }
+ 
+ app.use(cors(corsOptions))
   app.use(router);
 
   app.listen(port, () => {
