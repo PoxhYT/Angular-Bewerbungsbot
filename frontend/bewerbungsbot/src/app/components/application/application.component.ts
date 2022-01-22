@@ -26,10 +26,11 @@ export class ApplicationComponent implements OnInit {
   }
 
   downloadFile() {
-    var a = document.createElement("a"); //Create <a>
-    a.href = this.lists[0].base64 //Image Base64 Goes here
-    a.download = this.lists[0].filename //File name Here
-    a.click(); 
+    console.log(process.env['GOOGLE_API_KEY']);
+    // var a = document.createElement("a"); //Create <a>
+    // a.href = this.lists[0].base64 //Image Base64 Goes here
+    // a.download = this.lists[0].filename //File name Here
+    // a.click(); 
   }
 
   getBase64(file) {
