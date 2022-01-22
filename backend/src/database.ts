@@ -1,16 +1,16 @@
-import { port, connection } from './constans';
+import { port, connection } from "./constans";
 import "reflect-metadata";
 
 const database = connection;
-import mongoose from 'mongoose';
+import { connect } from "mongoose";
 
 async function connectToDatabase() {
-    try {
-        mongoose.connect(database);
-        console.log(`Connected to database ${connection}`);
-    } catch (error) {
-        console.error(error.message);
-    }
+  try {
+    connect(database as string);
+    console.log(`Connected to database ${connection}`);
+  } catch (error) {
+    console.error((error as any).message);
+  }
 }
 
 module.exports = connectToDatabase;
