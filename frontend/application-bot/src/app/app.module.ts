@@ -6,6 +6,9 @@ import { AppComponent } from './app.component';
 import { HomePageComponent } from './components/home-page/home-page.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { environment } from 'src/environments/environment';
+import { AngularFireModule } from '@angular/fire/compat';
+
 // Material Components
 import {MatButtonModule} from '@angular/material/button';
 
@@ -18,6 +21,9 @@ import {MatButtonModule} from '@angular/material/button';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+
     MatButtonModule
   ],
   providers: [],
