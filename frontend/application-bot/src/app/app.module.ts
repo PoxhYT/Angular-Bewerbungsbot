@@ -11,11 +11,15 @@ import { AngularFireModule } from '@angular/fire/compat';
 
 // Material Components
 import {MatButtonModule} from '@angular/material/button';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomePageComponent
+    HomePageComponent,
+    DashboardComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

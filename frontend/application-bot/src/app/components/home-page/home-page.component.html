@@ -1,4 +1,4 @@
-<!-- <div *ngIf="afAuth.user">
+<div>
   <div class="main">
     <div id="stars"></div>
     <div id="stars2"></div>
@@ -7,8 +7,8 @@
     <div class="navbar">
       <nav>
           <div class="menu">
-              <a href="https://github.com/PoxhYT/Angular-Bewerbungsbot">GITHUB</a>
-              <a href="#">CONTACT</a>
+              <a class="nav-item" href="https://github.com/PoxhYT/Angular-Bewerbungsbot">GITHUB</a>
+              <a class="nav-item" href="/login">CONTACT</a>
           </div>
       </nav>
     </div>
@@ -33,26 +33,10 @@
         Are you interessted in to start using the bot? What are you waiting for?
         Go ahead and start your journey with the Angular-Application-Bot now!
       </p>
-      <button mat-flat-button>START JOURNEY</button>
-      <div class="journey-picture">
+      <a class="button-journey" mat-flat-button href="/login">START JOURNEY</a>
+      <div href="/login" class="journey-picture">
           <img src="https://i.ibb.co/Jmhz84C/download-1.png"/>
       </div>
     </div>
   </div>
-</div> -->
-
-<div *ngIf="authService.auth.user | async as user">
-  <img src="{{ user.photoURL }}">
-  <h1>{{ user.displayName }}</h1>
-  <h1>{{ user.email }}</h1>
-  <button class="button" (click)="authService.googleLogout()">Logout</button>
 </div>
-
-<div *ngIf="!(authService.auth.user | async)">
-  User is not logged in
-  <button class="button" (click)="authService.googleSignin()">login with Google</button>
-</div>
-
-<ng-template #login>
-  <button class="button" (click)="googleSignin()">login with Google</button>
-</ng-template>

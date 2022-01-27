@@ -67,7 +67,7 @@ p {
     width: 30%;
 }
 
-button {
+.button-journey {
     position: absolute;
     top: 50%;
     left: 55%;
@@ -92,7 +92,7 @@ button {
     padding: 0.7rem;
 }
 
-a:hover {
+.nav-item:hover {
     padding: 0.7rem;
     background-color: #1b2735;
 }
