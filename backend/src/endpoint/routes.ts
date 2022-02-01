@@ -27,4 +27,25 @@ router.post("/sendApplication", async (req, res) => {
   res.json(user_response);
 });
 
+router.post("/register", async (req, res) => {
+  const { uid, userName, profilePicture, documents } = req.body;
+  
+  let isUserAlreadyRegistered = await isUserRegistered(uid);
+
+  if (!isUserAlreadyRegistered) {
+    const user = new User({
+      uid: uid,
+      userName: userName,
+      profilePicture: profilePicture,
+      documents: documents,
+    });
+    user.save();
+  }
+});
+
+async function isUserRegistered(uid: any) {
+  const result = await User.find({uid: uid});
+  return result.length > 0;
+}
+
 export { router };
