@@ -48,4 +48,19 @@ async function isUserRegistered(uid: any) {
   return result.length > 0;
 }
 
+//functions for application management
+
+router.post("/sendApplication", async (req, res) => {
+  const { uid, status, company, sentAT } = req.body;
+  const user = new User({
+    userName: userName,
+    profilePicture: profilePicture,
+    documents: documents,
+  });
+
+  const user_response = await user.save();
+  console.log(user_response);
+  res.json(user_response);
+});
+
 export { router };
