@@ -1,9 +1,10 @@
 import { Schema, model } from "mongoose";
 
 const ApplicationSchema = new Schema({
-  uid: { type: Number, required: true },
+  uidFromUser: { type: String, required: true },
   status: { type: String, required: true },
   company: { type: String, required: true },
+  emailFromCompany: { type: String, required: true },
   sentAT: { type: String, required: true },
 });
 

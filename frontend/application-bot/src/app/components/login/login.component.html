@@ -20,7 +20,7 @@
         <a href="#" mat-flat-button>Back to homepage</a>
     </div>
 
-    <div class="google-login" *ngIf="!(authService.auth.user | async)">
+    <div class="google-login" *ngIf="(authService.auth.user | async)">
 
         <img src="https://i.ibb.co/C5QwVVX/imageedit-42-4999854312.png">
 
