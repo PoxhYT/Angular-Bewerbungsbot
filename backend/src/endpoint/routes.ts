@@ -50,9 +50,7 @@ async function isUserRegistered(uid: any) {
 }
 
 async function applicationExists(uidFromUser: any, email: any) {
-  console.log(email);
   const result = await Application.find({uidFromUser: uidFromUser}).find({emailFromCompany: email});
-  console.log(result);
   return result.length > 0;
 }
 
@@ -97,7 +95,6 @@ router.post("/sendApplication", async (req, res) => {
 
 router.get("/getApplicationsFromUser", async (req, res) => {
   const uidFromUser = req.query.id;
-  console.log(uidFromUser);
   const applications = await getApplicationsFromUser(uidFromUser);
   res.json(applications);
 });
@@ -130,15 +127,10 @@ router.delete("/deleteApplicationFromUser", async (req, res) => {
   const email = req.query.emailFromCompany;
   const uid = req.query.uidFromUser;
 
-  console.log("Email: " + email);
-  console.log("UID: " + uid);
-
   const doc = await Application.findOneAndDelete(
     { emailFromCompany: email },
     { uidFromUser: uid }
   );
-
-  console.log(doc);
   res.json(doc);
 });
 
