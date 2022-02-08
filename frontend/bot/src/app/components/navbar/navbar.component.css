@@ -1,0 +1,26 @@
+.navbar-container {
+    position: fixed;
+    top: 0;
+    left: 1%;
+    width: 7%;
+    height: 100%;
+}
+
+.navbar-content {
+    position: absolute;
+    top: 40vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.navbar-content a {
+    border-radius: 10px;
+    margin-bottom: 1vh;
+    color: #ffffff;
+    width: 100%;
+}
+
+.list-item-active {
+    background-color: #1b2735;
+}
+

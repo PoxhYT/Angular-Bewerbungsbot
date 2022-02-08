@@ -1,0 +1,32 @@
+<div>
+    <div class="main">
+      <div id="stars"></div>
+      <div id="stars2"></div>
+      <div id="stars3"></div>
+  
+      <div class="card" *ngFor="let application of applications">
+  
+          <img src="https://i.ibb.co/HrC1JSn/imageedit-49-7357671364.png" class="application-icon">
+  
+          <div class="card-infromation-one">
+              <p class="item-information">Status: {{application.status}}</p>
+              <p class="item-information">Email: {{application.emailFromCompany}}</p>
+          </div>
+  
+          <div class="card-infromation-two">
+              <p class="item-information">Company: {{application.company}}</p>
+              <p class="item-information">Sent: {{application.sentAT}}</p>
+          </div>
+  
+          <div class="create-icon">
+              <mat-icon>create</mat-icon>
+          </div>
+  
+          <div class="delete-icon">
+              <mat-icon (click)="deleteApplication(application.emailFromCompany)">delete</mat-icon>
+          </div>
+  
+      </div>
+    </div>
+  </div>
+  
