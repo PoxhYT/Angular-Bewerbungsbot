@@ -1,3 +1,4 @@
 
 frontend/bewerbungsbot/.env
 frontend/application-bot/src/environments/environment.ts
+frontend/bot/src/environments/environment.ts
