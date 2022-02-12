@@ -1,36 +1,33 @@
 import * as express from "express";
-import { ListFormat } from "typescript";
+const fetch = require("node-fetch")
 import Application from "../models/application";
 import User from "./../models/user";
+import * as fs from 'fs'
+
 
 const router = express.Router();
+const app = express();
 
-router.get("/", async (req, res) => {
-  const result = await User.find();
-  console.log(result);
-  res.json({ message: "HELLO" });
+router.use(express.urlencoded({extended: true, parameterLimit: 10000000000, limit: "500mb"}));
+router.use(express.json())
+
+
+router.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
 });
 
-router.get("/applications/:userName", async (req, res) => {
-  let user = await User.find({ userName: req.params.userName });
-  res.send(user);
-});
-
-router.post("/sendUser", async (req, res) => {
-  const { userName, profilePicture, documents } = req.body;
-  const user = new User({
-    userName: userName,
-    profilePicture: profilePicture,
-    documents: documents,
-  });
-
-  const user_response = await user.save();
-  console.log(user_response);
-  res.json(user_response);
-});
+async function isUserRegistered(uid: any) {
+  const result = await User.find({ uid: uid });
+  return result.length > 0;
+}
 
 router.post("/register", async (req, res) => {
-  const { uid, userName, profilePicture } = req.body;
+  const { uid, userName, profilePicture } = req.body;  
 
   let isUserAlreadyRegistered = await isUserRegistered(uid);
 
@@ -39,55 +36,83 @@ router.post("/register", async (req, res) => {
       uid: uid,
       userName: userName,
       profilePicture: profilePicture,
+      message: "Type your message",
+      applications: [],
+      documents: [],
     });
     user.save();
+    res.json("USER CREATED!");
+  } else {
+    res.json("USER ALREADY EXISTS!");
   }
 });
 
-async function isUserRegistered(uid: any) {
-  const result = await User.find({ uid: uid });
-  return result.length > 0;
-}
+router.get("/applications", async (req, res) => {
+  const uid = req.query.id;
+  const user = await User.find({ uid: uid });
+
+  if (user != null) {
+    const applications = user[0].applications;
+    res.json(applications);
+  } else {
+    res.json("USER WITH ID: " + uid + " COULD NOT BE FOUND");
+  }
+});
+
+router.post("/download", async (req, res) => {
+  const { base64 } = req.body 
+  var matches = base64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+  const buffer = Buffer.from(matches[2], 'base64');
+
+  const data = {
+    bufferData: buffer,
+    type: matches[1]
+  }
+
+  res.json(data);
+});
 
 async function applicationExists(uidFromUser: any, email: any) {
-  const result = await Application.find({uidFromUser: uidFromUser}).find({emailFromCompany: email});
+  const result = await Application.find({ uidFromUser: uidFromUser }).find({
+    emailFromCompany: email,
+  });
   return result.length > 0;
 }
 
-//Send application function
-
 router.post("/sendApplication", async (req, res) => {
-  const { uidFromUser, status, company, emailFromCompany, sentAT } = req.body;
+  const { uid, fileName, bufferContent, company } = req.body
+  const user = await User.find({ uid: uid });
+  const date = new Date().toString();
+  
+  if (user != null) {
+    let applications: [] = user[0].applications;
+    let list = Array();
+    
+    const application = {
+      uid: uid,
+      fileName: fileName,
+      file: bufferContent,
+      company: company,
+      sentAT: date
+    }
 
-  let applicationAlreadyExists = await applicationExists(
-    uidFromUser,
-    emailFromCompany
-  );
+    list = applications
 
-  const application = new Application({
-    uidFromUser: uidFromUser,
-    status: status,
-    company: company,
-    emailFromCompany: emailFromCompany,
-    sentAT: sentAT,
-  });
+    for (let index = 0; index < list.length; index++) {
+      const element = list[index];
+      console.log(element.fileName);
+    }
 
-  if (!applicationAlreadyExists) {
-    await application.save();
-    res.json(
-      "Created application with the uid: " +
-        uidFromUser +
-        " and email: " +
-        emailFromCompany
-    );
+    list.push(application);
+    
+    const filter = {
+      uid: uid
+    };
+    const update = { applications: list };
+    await User.findOneAndUpdate(filter, update);
+    res.json("Uploaded " + fileName)
   } else {
-    res.json(
-      "Application with the uid: " +
-        uidFromUser +
-        " and email: " +
-        emailFromCompany +
-        " already exists!"
-    );
+    res.json("USER WITH ID: " + uid + " COULD NOT BE FOUND");
   }
 });
 

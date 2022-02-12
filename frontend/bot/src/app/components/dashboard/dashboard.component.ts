@@ -15,7 +15,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  url = "http://localhost:3000/"
+  url = "http://localhost:3000"
   createdData = false
   applications = <any>[] 
 

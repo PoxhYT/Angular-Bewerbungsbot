@@ -1,38 +1,68 @@
 <div>
-    <div class="main">
-      <div id="stars"></div>
-      <div id="stars2"></div>
-      <div id="stars3"></div>
-  
-      <div *ngIf="authService.auth.user | async as user;">
-  
-          <div class="profile">
-              <img class="profile-picture" src={{user.photoURL}}>
-              <h1 class="profile-name" style="color: white;">{{user.displayName}}</h1>
-              <h1 class="profile-status">Beginner</h1>
-          </div>
-      
-          <div class="message-container">
-              <textarea matInput
-                  placeholder="Enter your message"
-                  cdkTextareaAutosize
-                  contenteditable="true"
-                  cdkAutosizeMinRows="1"
-                  cdkAutosizeMaxRows="5"></textarea>
-  
-              <textarea matInput
-                  cdkTextareaAutosize
-                  placeholder="Enter a email"
-                  contenteditable="true"
-                  cdkAutosizeMinRows="1"
-                  cdkAutosizeMaxRows="1"></textarea>
-                  
-              <button mat-flat-button>Add Email</button>  
-  
-              <input hidden id="file-input" multiple type="file" (change)="myFunction()">
-              <button id="file-button" (click)="openFileSelection()" mat-flat-button>Upload files</button> 
-          </div>
+  <div class="main">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>
+
+    <div *ngIf="authService.auth.user | async as user">
+      <div class="profile">
+        <img class="profile-picture" src="{{ user.photoURL }}" />
+        <h1 class="profile-name" style="color: white">
+          {{ user.displayName }}
+        </h1>
+        <h1 class="profile-status">Beginner</h1>
       </div>
+
+      <div class="message-container">
+        <textarea
+          matInput
+          placeholder="Enter your message"
+          cdkTextareaAutosize
+          contenteditable="true"
+          cdkAutosizeMinRows="1"
+          cdkAutosizeMaxRows="5"
+        ></textarea>
+
+        <textarea
+          matInput
+          cdkTextareaAutosize
+          placeholder="Enter a email"
+          contenteditable="true"
+          cdkAutosizeMinRows="1"
+          cdkAutosizeMaxRows="1"
+        ></textarea>
+
+        <button mat-flat-button>Add Email</button>
+
+        <input
+          hidden
+          id="file-input"
+          multiple
+          type="file"
+          (change)="uploadFiles()"
+        />
+
+        <button id="file-button" (click)="openFileSelection()" mat-flat-button>
+          Upload applications
+        </button>
+
+        <button id="file-button" (click)="openFileSelection()" mat-flat-button>
+          Upload documents
+        </button>
+
+      </div>
+
+      <div class="applications">
+        <div class="main-content" *ngFor="let application of applications">
+          <div class="file-container">
+              <h1>{{ application.fileName }}</h1>  
+              <button (click)="donwloadFile(application)" mat-flat-button>
+                Donwload
+              </button> 
+          </div>
+        </div> 
+      </div>
+
     </div>
   </div>
-  
+</div>

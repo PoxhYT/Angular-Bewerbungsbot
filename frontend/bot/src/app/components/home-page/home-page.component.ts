@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import firebase from 'firebase/compat/app';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-home-page',
@@ -10,32 +11,17 @@ import { Router } from '@angular/router';
 })
 export class HomePageComponent implements OnInit {
 
-  constructor(public authService: AuthService, private router: Router) { }
+  constructor(public authService: AuthService, private router: Router, private http: HttpClient) { }
 
   ngOnInit(): void {
   }
 
   async googleSignin() {
-    const credential = await this.authService.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-    console.log("Final: " + this.authService.user$);
-    return this.createUser(credential.user);
+    await this.authService.googleSignin();
   }
 
   async googleLogout() {
     await this.authService.auth.signOut();
     return this.router.navigate(["/"])
   }
-
-  private createUser(user) {
-  
-    const data = {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL
-    };  
-    
-    console.log(data);
-  }
-
 }
