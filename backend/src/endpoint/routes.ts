@@ -1,16 +1,21 @@
 import * as express from "express";
-const fetch = require("node-fetch")
 import Application from "../models/application";
 import User from "./../models/user";
-import * as fs from 'fs'
+import * as nodemailer from "nodemailer";
+import * as fs from "fs";
 
-
+const fileToArrayBuffer = require("file-to-array-buffer");
 const router = express.Router();
 const app = express();
 
-router.use(express.urlencoded({extended: true, parameterLimit: 10000000000, limit: "500mb"}));
-router.use(express.json())
-
+router.use(
+  express.urlencoded({
+    extended: true,
+    parameterLimit: 10000000000,
+    limit: "500mb",
+  })
+);
+router.use(express.json());
 
 router.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
@@ -27,7 +32,7 @@ async function isUserRegistered(uid: any) {
 }
 
 router.post("/register", async (req, res) => {
-  const { uid, userName, profilePicture } = req.body;  
+  const { uid, userName, profilePicture } = req.body;
 
   let isUserAlreadyRegistered = await isUserRegistered(uid);
 
@@ -60,14 +65,14 @@ router.get("/applications", async (req, res) => {
 });
 
 router.post("/download", async (req, res) => {
-  const { base64 } = req.body 
+  const { base64 } = req.body;
   var matches = base64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-  const buffer = Buffer.from(matches[2], 'base64');
+  const buffer = Buffer.from(matches[2], "base64");
 
   const data = {
     bufferData: buffer,
-    type: matches[1]
-  }
+    type: matches[1],
+  };
 
   res.json(data);
 });
@@ -80,23 +85,23 @@ async function applicationExists(uidFromUser: any, email: any) {
 }
 
 router.post("/sendApplication", async (req, res) => {
-  const { uid, fileName, bufferContent, company } = req.body
+  const { uid, fileName, bufferContent, company } = req.body;
   const user = await User.find({ uid: uid });
   const date = new Date().toString();
-  
+
   if (user != null) {
     let applications: [] = user[0].applications;
     let list = Array();
-    
+
     const application = {
       uid: uid,
       fileName: fileName,
       file: bufferContent,
       company: company,
-      sentAT: date
-    }
+      sentAT: date,
+    };
 
-    list = applications
+    list = applications;
 
     for (let index = 0; index < list.length; index++) {
       const element = list[index];
@@ -104,13 +109,13 @@ router.post("/sendApplication", async (req, res) => {
     }
 
     list.push(application);
-    
+
     const filter = {
-      uid: uid
+      uid: uid,
     };
     const update = { applications: list };
     await User.findOneAndUpdate(filter, update);
-    res.json("Uploaded " + fileName)
+    res.json("Uploaded " + fileName);
   } else {
     res.json("USER WITH ID: " + uid + " COULD NOT BE FOUND");
   }
@@ -157,6 +162,31 @@ router.delete("/deleteApplicationFromUser", async (req, res) => {
     { uidFromUser: uid }
   );
   res.json(doc);
+});
+
+//Send email with attachments
+router.post("/sendEmail", async (req, res) => {
+  const { sender, reciever, title, content, password, files } =
+    req.body;
+
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: sender,
+      pass: password,
+    },
+  });
+
+  let mailOptions = {
+    from: sender,
+    to: reciever,
+    subject: title,
+    text: content,
+    attachments: files,
+  };
+
+  await transporter.sendMail(mailOptions);
+  res.json("Email send!");
 });
 
 export { router };

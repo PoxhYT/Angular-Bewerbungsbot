@@ -15,6 +15,7 @@ export class AuthService {
     this.auth.authState.subscribe(user => {
       if (user) {
         this.user$ = user;
+        console.log(user);
       }
     })
   }

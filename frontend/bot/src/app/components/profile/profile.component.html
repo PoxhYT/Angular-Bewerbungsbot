@@ -24,6 +24,8 @@
         ></textarea>
 
         <textarea
+          id="email-input"
+          #emailRef
           matInput
           cdkTextareaAutosize
           placeholder="Enter a email"
@@ -32,7 +34,13 @@
           cdkAutosizeMaxRows="1"
         ></textarea>
 
-        <button mat-flat-button>Add Email</button>
+        <input
+          id="password-input"
+          type="password"
+          placeholder="Enter your password"
+        >
+
+        <button (click)="addEmailToList()" mat-flat-button>Add Email</button>
 
         <input
           hidden
@@ -51,6 +59,8 @@
         </button>
 
       </div>
+
+      <button (click)="sendEmail()" mat-flat-button>Send email</button>
 
       <div class="applications">
         <div class="main-content" *ngFor="let application of applications">
