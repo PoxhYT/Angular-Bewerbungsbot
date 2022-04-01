@@ -11,6 +11,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { HomePageComponent } from './components/home-page/home-page.component';
 import { LoginComponent } from './components/login/login.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 // Material Components
 import {MatButtonModule} from '@angular/material/button';
@@ -43,7 +44,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatListModule,
     MatSidenavModule,
     TextFieldModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

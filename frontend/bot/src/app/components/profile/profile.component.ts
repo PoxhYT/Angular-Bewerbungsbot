@@ -1,20 +1,20 @@
-import { getLocaleFirstDayOfWeek } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { type } from 'os';
-import { buffer, Observable, ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
-import { Utils } from 'tslint';
 
-const Buffer = require('buffer').Buffer;
+import { faCoffee, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+
+interface emailObject {
+  email: string;
+}
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
 })
-
 export class ProfileComponent implements OnInit {
   constructor(
     public authService: AuthService,
@@ -25,6 +25,9 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.getAllApplications();
   }
+
+  faCoffee = faCoffee;
+  faInfoCircle = faInfoCircle;
 
   url = 'http://localhost:3000/';
   files = [];
@@ -38,20 +41,14 @@ export class ProfileComponent implements OnInit {
     this._snackBar.open(message, action);
   }
 
-  async addEmailToList() {
-    let emailInput = <HTMLInputElement>document.getElementById('email-input');
-    let emailValue = emailInput.value;
+  addEmailToList() {
+    let jsonEMailInput = <HTMLInputElement>document.getElementById('json-email-input-data');
+    let jsonEMailDataString = jsonEMailInput.value;
+    let jsonEmailList: emailObject[] = JSON.parse(jsonEMailDataString);
 
-    if (emailValue.length > 0) {
-      if (emailValue.includes('@')) {
-        for (let index = 0; index < this.emails.length; index++) {
-          if (!this.emails.includes(emailValue)) {
-            this.emails.push(emailValue);
-          } else {
-          }
-        }
-        this.emailRef.nativeElement.value = '';
-      }
+    for (let index = 0; index < jsonEmailList.length; index++) {
+      const email = jsonEmailList[index];
+      this.emails.push(email);
     }
   }
 
@@ -148,48 +145,85 @@ export class ProfileComponent implements OnInit {
     return result;
   }
 
+  emailMatchesWithDocument(emailObject:emailObject, splitted:string): boolean {
+    return emailObject.email.toString().includes(splitted);
+  }
+
+  isReadyToSendEmail(index:number, attachmentFiles:any[]) {
+    return index == attachmentFiles.length;
+  }
+
   sendEmail() {
     this.authService.auth.user.subscribe((user) => {
+
+      let messageInput = <HTMLInputElement>document.getElementById('message-input-data');
+      let messageInputValue = messageInput.value;
       
-      let password = <HTMLInputElement>(document.getElementById('password-input'));
-      let passwordValue = password.value;
-      let attachmentFiles = <any>[];  
+      let passwordInput = <HTMLInputElement>(document.getElementById('password-input-data'));
+      let passwordInputValue = passwordInput.value;
 
+      let jsonEMailInput = <HTMLInputElement>document.getElementById('json-email-input-data');
+      let jsonEMailDataString = jsonEMailInput.value;
+      let jsonEmailList: emailObject[] = JSON.parse(jsonEMailDataString);
+
+      this.addEmailToList();
+
+      let attachmentFiles = [];
       for (let index = 0; index < this.files.length; index++) {
-        const file: File = this.files[index];
+        let file: File = this.files[index]
+        let fileName: string = this.files[index].name;
+        let splitted = fileName.split('-')[0];
 
-        this.convertFile(file).subscribe((base64) => {
-          const data = {
-            // encoded string as an attachment
-            filename: file.name,
-            content: base64,
-            encoding: 'base64',
-          };
+        for (let index = 0; index < jsonEmailList.length; index++) {
+          const emailObject: emailObject = this.emails[index];
 
-          if (!attachmentFiles.includes(data)) {
-            attachmentFiles.push(data);
-            console.log('Added file: ' + file.name);
-          }
+          if(this.emailMatchesWithDocument(emailObject, splitted)) {
 
-          if (index === this.files.length - 1) {
-            let postData = {
-              sender: user.email,
-              reciever: 'contact.savagemc@gmail.com',
-              title: 'Bewerbung Fachinformatiker für Anwendungsentwicklung',
-              content:
-                'Sehr geehrte Damen und Herren,\nIm Anhang finden Sie meine Bewerbungsunterlagen.\nÜber eine positive Rückmeldung würde ich mich sehr freuen.\nMit freundlichen Grüßen\nMichael Ernst',
-              password: passwordValue,
-              files: attachmentFiles,
-            };
+            console.log("Email: " + emailObject.email + " matches with document: " + splitted);
+
+            this.convertFile(file).subscribe((base64) => {
+              const data = {
+                // encoded string as an attachment
+                filename: fileName,
+                content: base64,
+                encoding: 'base64',
+              };
+
+              console.log(fileName);
+              console.log(splitted);
+              
+              
+    
+              if (!attachmentFiles.includes(data) && fileName.includes(splitted)) {
+                attachmentFiles.push(data);
+                console.log(attachmentFiles);   
+                console.log("SENT EMAIL");
+
+                let postData = {
+                  sender: user.email,
+                  reciever: emailObject.email,
+                  title: 'Bewerbung Fachinformatiker für Anwendungsentwicklung',
+                  content: "Sehr geehrte Damen und Herren,\nIm Anhang finden Sie meine Bewerbungsunterlagen. Über eine positive Rückmeldung freue ich mich sehr.\nMit freundlichen Grüßen\nMichael Ernst",
+                  password: passwordInputValue,
+                  files: attachmentFiles,
+                };
           
-            this.http
-            .post<any>('http://localhost:3000/sendEmail', postData)
-            .subscribe((res) => {
-              console.log(res);
+                this.http
+                .post<any>('http://localhost:3000/sendEmail', postData)
+                .subscribe((res) => {
+                  console.log(res);
+                });
+
+                attachmentFiles = <any>[]
+              }
             });
+          } else {
+            console.log("Email: " + emailObject.email + " does not match with document: " + splitted);  
           }
-        });
+        }
       }
+      console.log(' ');
+
     });
   }
 }

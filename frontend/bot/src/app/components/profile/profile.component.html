@@ -1,3 +1,7 @@
+<head>
+  <script src="https://kit.fontawesome.com/22cd3e1d45.js" crossorigin="anonymous"></script>
+</head>
+
 <div>
   <div class="main">
     <div id="stars"></div>
@@ -5,7 +9,50 @@
     <div id="stars3"></div>
 
     <div *ngIf="authService.auth.user | async as user">
-      <div class="profile">
+
+      <div class="json-data">
+        <h1 class="json-data-title">Enter a valid email data</h1>
+        <input class="json-data-input" matInput placeholder="Json value" id="json-email-input-data">
+        <fa-icon [icon]="faInfoCircle" class="json-data-icon"></fa-icon>
+      </div>
+
+      <div class="message-data">
+        <h1 class="message-data-title">Enter your message</h1>
+        <input class="message-data-input" matInput placeholder="Message value" id="message-input-data">
+        <fa-icon [icon]="faInfoCircle" class="message-data-icon"></fa-icon>
+      </div>
+
+      <div class="password-data">
+        <h1 class="password-data-title">Enter a valid password</h1>
+        <input class="password-data-input" type="password" matInput placeholder="Password value" id="password-input-data">
+        <fa-icon [icon]="faInfoCircle" class="password-data-icon"></fa-icon>
+      </div>
+
+      <div class="file-data">
+        <h1 class="file-data-title">Upload valid files</h1>
+        <h1 class="file-data-sub-title">Remember that the files are supported only in PDF format!</h1>
+        <fa-icon [icon]="faInfoCircle" class="file-data-icon"></fa-icon>
+
+        <button (click)="openFileSelection()" mat-flat-button>Upload</button>
+        <input
+          hidden
+          id="file-input"
+          multiple
+          type="file"
+          (change)="uploadFiles()"
+        />
+
+      </div>
+
+      <div class="email-data">
+        <h1 class="email-data-title">Send your emails</h1>
+        <h1 class="email-data-sub-title">Make shure that all your files are correct and complete!</h1>
+        <fa-icon [icon]="faInfoCircle" class="email-data-icon"></fa-icon>
+
+        <button (click)="sendEmail()" mat-flat-button>Send emails</button>
+      </div>
+
+      <!-- <div class="profile">
         <img class="profile-picture" src="{{ user.photoURL }}" />
         <h1 class="profile-name" style="color: white">
           {{ user.displayName }}
@@ -71,7 +118,7 @@
               </button> 
           </div>
         </div> 
-      </div>
+      </div> -->
 
     </div>
   </div>
